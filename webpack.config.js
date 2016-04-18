@@ -10,6 +10,8 @@ module.exports = function (webpackConfig) {
     const component = process.env.COMPONENT_STYLE;
 
     webpackConfig.entry = {
+      'zh-Hans-CN': './site/entry/zh-Hans-CN.js',
+      'en-US': './site/entry/en-US.js',
       index: './site/entry/index.jsx',
     };
     webpackConfig.resolve.root = process.cwd();
