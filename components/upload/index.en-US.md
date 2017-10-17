@@ -1,7 +1,7 @@
 ---
 category: Components
-type: Form Controls
-english: Upload
+type: Data Entry
+title: Upload
 ---
 
 Upload file by selecting or dragging.
@@ -16,23 +16,28 @@ Uploading is the process of publishing information (web pages, text, pictures, v
 
 ## API
 
+> You can consult [jQuery-File-Upload](https://github.com/blueimp/jQuery-File-Upload/wiki) about how to implement server side upload interface.
+
 | Property       | Description                                    | Type        | Default|
 |------------|----------------------------------------------------| ----------- |--------|
-| name       | Optional. The name of uploading file               | String      | file  |
-| defaultFileList | Optional. Default list of files that have been uploaded.                   | Array[Object] | -  |
-| fileList   | Optional. List of files that have been uploaded.   | Array[Object] | - |
-| action     | Required. Uploading URL                            | String      | -    |
-| data       | Optional. Uploading params or function which can return uploading params. | Object or function(file) | - |
-| headers    | Optional. Set request headers, valid above IE10.   | Object      | -    |
-| showUploadList | Optional. Whether to show uploadList.          | Boolean     | true  |
-| multiple   | Optional. Whether to support selected multiple file. `IE10+` supported. You can select multiple files with CTRL holding down while multiple is set to be true  | Boolean     | false |
-| accept     | Optional. File types that can be accepted. See [input accept Attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-accept)    | String      | -   |
-| beforeUpload | Optional. Hook function which takes an argument: the uploaded file, will be executed before uploading.  Uploading will be stopped with `false` or a rejected Promise returned. **Warning：this function is not supported by old IE**。 | Function    | -    |
-| onChange   | Optional. A callback function, can be executed when uploading state is changing. See [onChange](#onChange)                | Function    | -   |
-| listType   | Optional. Built-in stylesheets, support for two types: `text` or `picture`     | String      | 'text'|
-| onPreview  | A callback function, will be executed when file link is clicked.  | Function(file) | -  |
-| onRemove   | A callback function, will be executed when removing file button is clicked                                       | Function(file) | -   |
-| supportServerRender | Need to be turned on while the server side is rendering.| Boolean | false    |
+| name       | The name of uploading file               | string      | 'file' |
+| defaultFileList | Default list of files that have been uploaded.                   | object[] | -  |
+| fileList   | List of files that have been uploaded (controlled). Here is a common issue [#2423](https://github.com/ant-design/ant-design/issues/2423) when using it | object[] | - |
+| action     | Required. Uploading URL                            | string      | -    |
+| data       | Uploading params or function which can return uploading params. | object\|function(file) | - |
+| headers    | Set request headers, valid above IE10.   | object      | -    |
+| showUploadList | Whether to show default upload list, could be an object to specify `showPreviewIcon` and `showRemoveIcon` individually | Boolean or { showPreviewIcon?: boolean, showRemoveIcon?: boolean } | true |
+| multiple   | Whether to support selected multiple file. `IE10+` supported. You can select multiple files with CTRL holding down while multiple is set to be true  | boolean     | false |
+| accept     | File types that can be accepted. See [input accept Attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-accept)    | string      | -   |
+| beforeUpload | Hook function which will be executed before uploading. Uploading will be stopped with `false` or a rejected Promise returned. **Warning：this function is not supported in IE9**。 | (file, fileList) => `boolean | Promise`    | -    |
+| customRequest | override for the default xhr behavior allowing for additional customization and ability to implement your own XMLHttpRequest | Function | - |
+| onChange   | A callback function, can be executed when uploading state is changing. See [onChange](#onChange)                | Function    | -   |
+| listType   | Built-in stylesheets, support for three types: `text`, `picture` or `picture-card`     | string      | 'text'|
+| onPreview  | A callback function, will be executed when file link or preview icon is clicked.  | Function(file) | -  |
+| onRemove   | A callback function, will be executed when removing file button is clicked, remove event will be prevented when return value is `false` or a Promise which resolve(false) or reject. | Function(file): `boolean | Promise` | -   |
+| supportServerRender | Need to be turned on while the server side is rendering.| boolean | false    |
+| disabled | disable upload button | boolean | false    |
+| withCredentials | ajax upload with cookie sent | boolean | false |
 
 ### onChange
 
@@ -54,8 +59,8 @@ When uploading state change, it returns:
    {
       uid: 'uid',      // unique identifier，negative is recommend，to prevent interference with internal generated id
       name: 'xx.png'   // file name
-      status: 'done',  // options：uploading, done, error, removed
-      response: '{"status": "success"}',  // response from server
+      status: 'done', // options：uploading, done, error, removed
+      response: '{"status": "success"}', // response from server
    }
    ```
 
@@ -66,7 +71,11 @@ When uploading state change, it returns:
 
 ## show download links
 
-please set property `url` of property `fileList` to control content of link
+Please set property `url` of property `fileList` to control content of link
+
+## customRequest
+
+* https://github.com/react-component/upload#customrequest
 
 ## IE note
 

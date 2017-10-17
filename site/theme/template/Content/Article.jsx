@@ -1,13 +1,24 @@
 import React, { Children, cloneElement } from 'react';
+import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import DocumentTitle from 'react-document-title';
 import { getChildren } from 'jsonml.js/lib/utils';
-import { Timeline } from 'antd';
+import { Timeline, Alert } from 'antd';
+import delegate from 'delegate';
 import EditButton from './EditButton';
-import * as utils from '../utils';
+import { ping } from '../utils';
 
 export default class Article extends React.Component {
+  static contextTypes = {
+    intl: PropTypes.object.isRequired,
+  }
   componentDidMount() {
+    // Add ga event click
+    this.delegation = delegate(this.node, '.resource-card', 'click', (e) => {
+      if (window.ga) {
+        window.ga('send', 'event', 'Download', 'resource', e.delegateTarget.href);
+      }
+    }, false);
     this.componentDidUpdate();
   }
   componentDidUpdate() {
@@ -15,9 +26,8 @@ export default class Article extends React.Component {
     if (links.length === 0) {
       return;
     }
-    const checkImgUrl = 'http://alipay-rmsdeploy-dev-image.oss-cn-hangzhou-zmf.aliyuncs.com/rmsportal/JdVaTbZzPxEldUi.png';
-    this.pingTimer = utils.ping(checkImgUrl, status => {
-      if (status === 'responded') {
+    this.pingTimer = ping((status) => {
+      if (status !== 'timeout' && status !== 'error') {
         links.forEach(link => (link.style.display = 'block'));
       } else {
         links.forEach(link => link.parentNode.removeChild(link));
@@ -26,6 +36,9 @@ export default class Article extends React.Component {
   }
   componentWillUnmount() {
     clearTimeout(this.pingTimer);
+    if (this.delegation) {
+      this.delegation.destroy();
+    }
   }
   getArticle(article) {
     const { content } = this.props;
@@ -36,7 +49,7 @@ export default class Article extends React.Component {
     const timelineItems = [];
     let temp = [];
     let i = 1;
-    Children.forEach(article.props.children, child => {
+    Children.forEach(article.props.children, (child) => {
       if (child.type === 'h2' && temp.length > 0) {
         timelineItems.push(<Timeline.Item key={i}>{temp}</Timeline.Item>);
         temp = [];
@@ -52,20 +65,32 @@ export default class Article extends React.Component {
     });
   }
   render() {
-    const props = this.props;
-    const content = props.content;
+    const { props } = this;
+    const { content } = props;
 
     const { meta, description } = content;
-    const { title, subtitle, chinese, english, filename } = meta;
-
+    const { title, subtitle, filename } = meta;
+    const { locale } = this.context.intl;
+    const isNotTranslated = locale === 'en-US' && typeof title === 'object';
     return (
-      <DocumentTitle title={`${title || chinese || english} - Ant Design`}>
-        <article className="markdown">
+      <DocumentTitle title={`${title[locale] || title} - Ant Design`}>
+        <article className="markdown" ref={(node) => { this.node = node; }}>
+          {isNotTranslated && (
+            <Alert
+              type="warning"
+              message={(
+                <span>
+                  This article has not been translated, hope that your can PR to translated it.
+                  <a href="https://github.com/ant-design/ant-design/issues/1471"> Help us!</a>
+                </span>
+              )}
+            />
+          )}
           <h1>
-            {title || english}
+            {title[locale] || title}
             {
-              (!subtitle && !chinese) ? null :
-                <span className="subtitle">{subtitle || chinese}</span>
+              !subtitle || locale === 'en-US' ? null :
+              <span className="subtitle">{subtitle}</span>
             }
             <EditButton title={<FormattedMessage id="app.content.edit-page" />} filename={filename} />
           </h1>
@@ -77,12 +102,19 @@ export default class Article extends React.Component {
           }
           {
             (!content.toc || content.toc.length <= 1 || meta.toc === false) ? null :
-              <section className="toc">{props.utils.toReactComponent(content.toc)}</section>
+            <section className="toc">{props.utils.toReactComponent(content.toc)}</section>
           }
           {
             this.getArticle(props.utils.toReactComponent(
               ['section', { className: 'markdown' }].concat(getChildren(content.content))
             ))
+          }
+          {
+            props.utils.toReactComponent(
+              ['section', {
+                className: 'markdown api-container',
+              }].concat(getChildren(content.api || ['placeholder']))
+            )
           }
         </article>
       </DocumentTitle>

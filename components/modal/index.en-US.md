@@ -1,41 +1,47 @@
 ---
-type: Views
+type: Feedback
 category: Components
-english: Modal
+title: Modal
 ---
 
 Modal dialogs.
 
 ## When To Use
 
-When requiring users to interact with application, but without jumping to a new page to interrupt
-the user's workflow, you can use `Modal` to create a new floating layer over the current page for user
-getting feedback or information purposes.
-Additionally, if you need show a simple confirmation dialog, you can use `ant.Modal.confirm()`,
+When requiring users to interact with the application, but without jumping to a new page and interrupting
+the user's workflow, you can use `Modal` to create a new floating layer over the current page to get user
+feedback or display information.
+Additionally, if you need show a simple confirmation dialog, you can use `antd.Modal.confirm()`,
 and so on.
-
-
 
 ## API
 
-
 | Property       | Description           | Type             | Default       |
 |------------|----------------|------------------|--------------|
-| visible    | Determine whether a modal dialog is visible or not | Boolean | no |
-| confirmLoading | Determine whether to apply loading visual effect for OK button or not  | Boolean    | no           |
-| title      | The modal dialog's title          | React.Element    | no           |
-| closable   | Determine whether a close (x) button is visible on top right of the modal dialog or not | Boolean    | true        |
-| onOk       | Specify a function that will be called when a user clicked OK button | function | no |
-| onCancel   | Specify a function that will be called when a user clicked mask, close button on top right or cancel button | function(e)  | no         |
-| width      | Width of a modal dialog           | String or Number | 520           |
-| footer     | Footer content       | React.Element    | OK and cancel button |
-| okText     | Text of the OK button    | String           | OK       |
-| cancelText | Text of the Cancel button    | String           | Cancel       |
-| maskClosable | Determine whether to close the modal dialog when clicked mask of it. | Boolean   | true       |
-| style | Style of floating layer, typically used at least for adjusting the position. | Object   | - |
-| wrapClassName | The class name of the container of the modal dialog | String   | - |
+| visible    | Whether the modal dialog is visible or not | boolean | false |
+| confirmLoading | Whether to apply loading visual effect for OK button or not  | boolean    | false           |
+| title      | The modal dialog's title          | string\|ReactNode | -           |
+| closable   | Whether a close (x) button is visible on top right of the modal dialog or not | boolean    | true        |
+| onOk       | Specify a function that will be called when a user clicks the OK button | function(e) | - |
+| onCancel   | Specify a function that will be called when a user clicks mask, close button on top right or Cancel button | function(e)  | -         |
+| width      | Width of the modal dialog           | string\|number | 520           |
+| footer     | Footer content, set as `footer={null}` when you don't need default buttons | string\|ReactNode | OK and Cancel buttons |
+| okText     | Text of the OK button    | string           | `OK`       |
+| okType    | Button `type` of the OK button            | string        | `primary`   |
+| cancelText | Text of the Cancel button    | string           | `Cancel`       |
+| maskClosable | Whether to close the modal dialog when the mask (area outside the modal) is clicked | boolean   | true       |
+| style | Style of floating layer, typically used at least for adjusting the position. | object   | - |
+| wrapClassName | The class name of the container of the modal dialog | string   | - |
+| afterClose | Specify a function that will be called when modal is closed completely. | function | - |
+| getContainer | Return the mount node for Modal | (instance): HTMLElement | () => document.body |
+| zIndex | The `z-index` of the Modal | Number | 1000 |
 
-### Modal.xxx()
+#### Destroy on close
+
+> The state of Modal will be preserved at it's component lifecycle.
+> If you wish to open it with a brand new state everytime, you need to reset state manually.
+
+### Modal.method()
 
 There are five ways to display the information based on the content's nature:
 
@@ -45,19 +51,29 @@ There are five ways to display the information based on the content's nature:
 - `Modal.warning`
 - `Modal.confirm`
 
-The item listd above are all functions, expecting a settings object as parameter.
+The items listed above are all functions, expecting a settings object as parameter.
 The properties of the object are follows:
 
 | Property   | Description    | Type             | Default       |
 |------------|----------------|------------------|---------------|
-| title      | Title           | React.Element or String    | no           |
-| content    | Content           | React.Element or String    | no          |
-| onOk       | Specify a function that will be called when a user clicked OK button. The parameter of this function is a function whose execution should include closing the dialog. You can also just return a promise and when the promise is resolved, the modal dialog will also be closed    | function         | no           |
-| onCancel   | Specify a function that will be called when a user clicked Cancel button. The parameter of this function is a function whose execution should include closing the dialog. You can also just return a promise and when the promise is resolved, the modal dialog will also be closed       | function         | no           |
-| width      | Width of dialog           | String or Number | 416           |
-| iconType   | Type of Icon component    | String | question-circle |
-| okText     | Text of OK button    | String           | OK       |
-| cancelText | Text of cancel button    | String           | Cancel       |
+| title      | Title           | string\|ReactNode | -           |
+| content    | Content           | string\|ReactNode | -          |
+| onOk       | Specify a function that will be called when the user clicks the OK button. The parameter of this function is a function whose execution should include closing the dialog. You can also just return a promise and when the promise is resolved, the modal dialog will also be closed    | function         | -           |
+| onCancel   | Specify a function that will be called when the user clicks the Cancel button. The parameter of this function is a function whose execution should include closing the dialog. You can also just return a promise and when the promise is resolved, the modal dialog will also be closed       | function         | -           |
+| width      | Width of the modal dialog           | string\|number | 416           |
+| iconType   | Icon `type` of the Icon component    | string | `question-circle` |
+| okText     | Text of the OK button    | string           | `OK`       |
+| okType    | Button `type` of the OK button                              | string        | `primary`   |
+| cancelText | Text of the Cancel button    | string           | `Cancel`       |
+| maskClosable | Whether to close the modal dialog when the mask (area outside the modal) is clicked | Boolean   | `false`       |
+| zIndex | The `z-index` of the Modal | Number | 1000 |
+
+All the `Modal.method`s will return a reference, and then we can close the modal dialog by the reference.
+
+```jsx
+const ref = Modal.info();
+ref.destroy();
+```
 
 <style>
 .code-box-demo .ant-btn {

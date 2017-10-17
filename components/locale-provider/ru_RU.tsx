@@ -2,12 +2,16 @@
  * Created by Andrey Gayvoronsky on 13/04/16.
  */
 
+import moment from 'moment';
+moment.locale('ru');
+
 import Pagination from 'rc-pagination/lib/locale/ru_RU';
 import DatePicker from '../date-picker/locale/ru_RU';
 import TimePicker from '../time-picker/locale/ru_RU';
 import Calendar from '../calendar/locale/ru_RU';
 
 export default {
+  locale: 'ru',
   Pagination,
   DatePicker,
   TimePicker,
@@ -17,6 +21,8 @@ export default {
     filterConfirm: 'OK',
     filterReset: 'Сбросить',
     emptyText: 'Нет данных',
+    selectAll: 'Выбрать всё',
+    selectInvert: 'Инвертировать выбор',
   },
   Modal: {
     okText: 'OK',
@@ -28,12 +34,18 @@ export default {
     cancelText: 'Отмена',
   },
   Transfer: {
-    notFoundContent: 'Not Found',
-    searchPlaceholder: 'Search here',
+    notFoundContent: 'Ничего не найдено',
+    searchPlaceholder: 'Введите название для поиска',
     itemUnit: 'item',
     itemsUnit: 'items',
   },
   Select: {
-    notFoundContent: 'Not Found',
+    notFoundContent: 'Ничего не найдено',
+  },
+  Upload: {
+    uploading: 'Закачиваю...',
+    removeFile: 'Удалить файл',
+    uploadError: 'Ошибка при закачке',
+    previewFile: 'Предпросмотр файла',
   },
 };

@@ -1,5 +1,5 @@
 ---
-category: 十大原则
+category: Principles
 order: 10
 title: React Immediately
 ---
@@ -15,7 +15,6 @@ While there is a possibility of too much feedback (or, more accurately, too much
 ---
 
 ## Lookup Patterns
-
 
 <img class="preview-img" align="right" alt="example of Certain Category" description="The keyword of the user query is only displayed in three categories, Topics, Questions and Articles." src="https://os.alipayobjects.com/rmsportal/fgQfkNakHrUiAun.png">
 
@@ -37,6 +36,7 @@ Refining Search: Refining Search provides a set of live filters that allow the s
 <br>
 
 ---
+
 ## Live Suggest
 
 <img class="preview-img" align="right" alt="example of Live Preview" description="Depending on the type of the input from the user, the system provides instant feedback on password strength and validation." src="https://os.alipayobjects.com/rmsportal/jecYhRgfbHleGDJ.png">

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import RcTree, { TreeNode } from 'rc-tree';
 import animation from '../_util/openAnimation';
 
@@ -27,7 +27,7 @@ export interface AntTreeNodeEvent {
 
 export interface AntTreeNodeMouseEvent {
   node: AntTreeNode;
-  event: React.MouseEventHandler;
+  event: React.MouseEventHandler<any>;
 }
 
 export interface TreeProps {
@@ -96,10 +96,14 @@ export default class Tree extends React.Component<TreeProps, any> {
 
   render() {
     const props = this.props;
+    const { prefixCls, className } = props;
     let checkable = props.checkable;
     return (
-      <RcTree {...props}
-        checkable={checkable ? (<span className={`${props.prefixCls}-checkbox-inner`}></span>) : checkable }>
+      <RcTree
+        {...props}
+        className={className}
+        checkable={checkable ? <span className={`${prefixCls}-checkbox-inner`} /> : checkable}
+      >
         {this.props.children}
       </RcTree>
     );

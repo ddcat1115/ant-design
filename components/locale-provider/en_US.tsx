@@ -1,18 +1,24 @@
+import moment from 'moment';
+moment.locale('en');
+
 import Pagination from 'rc-pagination/lib/locale/en_US';
 import DatePicker from '../date-picker/locale/en_US';
 import TimePicker from '../time-picker/locale/en_US';
 import Calendar from '../calendar/locale/en_US';
 
 export default {
+  locale: 'en',
   Pagination,
   DatePicker,
   TimePicker,
   Calendar,
   Table: {
-    filterTitle: 'Filter Menu',
+    filterTitle: 'Filter menu',
     filterConfirm: 'OK',
     filterReset: 'Reset',
-    emptyText: 'No Data',
+    emptyText: 'No data',
+    selectAll: 'Select current page',
+    selectInvert: 'Invert current page',
   },
   Modal: {
     okText: 'OK',
@@ -31,5 +37,11 @@ export default {
   },
   Select: {
     notFoundContent: 'Not Found',
+  },
+  Upload: {
+    uploading: 'Uploading...',
+    removeFile: 'Remove file',
+    uploadError: 'Upload error',
+    previewFile: 'Preview file',
   },
 };

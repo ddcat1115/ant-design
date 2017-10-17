@@ -1,9 +1,7 @@
-import * as React from 'react';
+import React from 'react';
 import { createElement, Component } from 'react';
-import {findDOMNode} from 'react-dom';
-import isCssAnimationSupported from '../_util/isCssAnimationSupported';
-import assign from 'object-assign';
 import omit from 'omit.js';
+import classNames from 'classnames';
 
 function getNumberArray(num) {
   return num ?
@@ -13,24 +11,22 @@ function getNumberArray(num) {
       .map(i => Number(i)) : [];
 }
 
-export default class ScrollNumber extends Component<any, any> {
+export interface ScrollNumberProps {
+  prefixCls?: string;
+  className?: string;
+  count?: string | number;
+  component?: string;
+  onAnimated?: Function;
+  style?: React.CSSProperties;
+  title?: string | number;
+}
+
+export default class ScrollNumber extends Component<ScrollNumberProps, any> {
   static defaultProps = {
     prefixCls: 'ant-scroll-number',
     count: null,
-    component: 'sup',
     onAnimated() {
     },
-    height: 18,
-  };
-
-  static propTypes = {
-    count: React.PropTypes.oneOfType([
-      React.PropTypes.string,
-      React.PropTypes.number,
-    ]),
-    component: React.PropTypes.string,
-    onAnimated: React.PropTypes.func,
-    height: React.PropTypes.number,
   };
 
   lastCount: any;
@@ -41,12 +37,6 @@ export default class ScrollNumber extends Component<any, any> {
       animateStarted: true,
       count: props.count,
     };
-  }
-
-  componentDidMount() {
-    if (!isCssAnimationSupported()) {
-      findDOMNode(this).className += ' not-support-css-animation';
-    }
   }
 
   getPositionByNum(num, i) {
@@ -85,7 +75,10 @@ export default class ScrollNumber extends Component<any, any> {
             animateStarted: false,
             count: nextProps.count,
           }, () => {
-            this.props.onAnimated();
+            const onAnimated = this.props.onAnimated;
+            if (onAnimated) {
+              onAnimated();
+            }
           });
         }, 5);
       });
@@ -93,26 +86,25 @@ export default class ScrollNumber extends Component<any, any> {
   }
 
   renderNumberList(position) {
-    const childrenToReturn = [];
+    const childrenToReturn: React.ReactElement<any>[] = [];
     for (let i = 0; i < 30; i++) {
-      const currentClassName = (position === i) ? 'current' : null;
-      childrenToReturn.push(<p key={i} className={currentClassName}>{i % 10}</p>);
+      const currentClassName = (position === i) ? 'current' : '';
+      childrenToReturn.push(<p key={i.toString()} className={currentClassName}>{i % 10}</p>);
     }
     return childrenToReturn;
   }
 
   renderCurrentNumber(num, i) {
     const position = this.getPositionByNum(num, i);
-    const height = this.props.height;
     const removeTransition = this.state.animateStarted ||
       (getNumberArray(this.lastCount)[i] === undefined);
     return createElement('span', {
       className: `${this.props.prefixCls}-only`,
       style: {
         transition: removeTransition && 'none',
-        WebkitTransform: `translateY(${-position * height}px)`,
-        transform: `translateY(${-position * height}px)`,
-        height,
+        msTransform: `translateY(${-position * 100}%)`,
+        WebkitTransform: `translateY(${-position * 100}%)`,
+        transform: `translateY(${-position * 100}%)`,
       },
       key: i,
     }, this.renderNumberList(position));
@@ -128,19 +120,29 @@ export default class ScrollNumber extends Component<any, any> {
   }
 
   render() {
+    const { prefixCls, className, style, title, component = 'sup' } = this.props;
     // fix https://fb.me/react-unknown-prop
-    const props = assign({}, omit(this.props, [
+    const restProps = omit(this.props, [
       'count',
       'onAnimated',
       'component',
       'prefixCls',
-    ]), {
-      className: `${this.props.prefixCls} ${this.props.className}`,
-    });
+    ]);
+    const newProps = {
+      ...restProps,
+      className: classNames(prefixCls, className),
+      title: title as string,
+    };
+    // allow specify the border
+    // mock border-color by box-shadow for compatible with old usage:
+    // <Badge count={4} style={{ backgroundColor: '#fff', color: '#999', borderColor: '#d9d9d9' }} />
+    if (style && style.borderColor) {
+      newProps.style.boxShadow = `0 0 0 1px ${style.borderColor} inset`;
+    }
     return createElement(
-      this.props.component,
-      props,
-      this.renderNumberElement()
+      component as any,
+      newProps,
+      this.renderNumberElement(),
     );
   }
 }

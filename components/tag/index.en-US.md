@@ -1,22 +1,31 @@
 ---
 category: Components
-type: Views
-english: Tag
+type: Data Display
+title: Tag
 ---
 
-Tag for categorizing or markuping.
+Tag for categorizing or markup.
 
 ## When To Use
 
 - It can be used to tag by dimension or property.
 
-- categorizing
+- When categorizing.
 
 ## API
 
+### Tag
+
 | Property     | Description           | Type     | Default      |
 |--------------|-----------------------|----------|--------------|
-| closable     | Tag can be closed.    | boolean  | false        |
-| onClose      | Callback when tag was closed | function(event)| - |
-| afterClose   | Callback when closed animation is complete | function(event)| - |
-| color        | Tag's color: `blue` `green` `yellow` `red` | string | - |
+| color        | Color of the Tag      | string | - |
+| closable     | Whether Tag can be closed    | boolean  | `false`        |
+| onClose      | Callback executed when tag is closed | (e) => void | - |
+| afterClose   | Callback executed when close animation is completed | () => void | - |
+
+### Tag.CheckableTag
+
+| Property     | Description           | Type     | Default      |
+|--------------|-----------------------|----------|--------------|
+| checked      | Checked status of Tag | boolean | `false` |
+| onChange     | Callback executed when Tag is checked/unchecked | (checked) => void | - |
